@@ -19,14 +19,20 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
-      await API.post('/register', formData);
+      const response = await API.post('/register', formData);
+      console.log('Registration Response:', response.data);
       alert('Registration successful! Please login.');
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Something went wrong');
+      console.error('Registration Error:', err);
+      setError(err.response?.data?.message || err.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }

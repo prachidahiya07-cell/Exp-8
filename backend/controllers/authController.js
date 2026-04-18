@@ -12,6 +12,7 @@ const generateToken = (id, name, role) => {
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = async (req, res) => {
+    console.log('Register Body:', req.body);
     const { name, email, password, role } = req.body;
 
     try {
@@ -43,6 +44,10 @@ const registerUser = async (req, res) => {
         }
     } catch (error) {
         console.error(error);
+        if (error.name === 'ValidationError') {
+            const message = Object.values(error.errors).map(val => val.message);
+            return res.status(400).json({ message: message.join(', ') });
+        }
         res.status(500).json({ message: 'Server error during registration' });
     }
 };
